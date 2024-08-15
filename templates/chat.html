@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat with Text-to-Speech</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Chat with Text-to-Speech</h1>
+        <form id="chatForm">
+            <label for="userInput">Enter your message:</label>
+            <textarea id="userInput" rows="4" placeholder="Type your message here..."></textarea>
+            <button type="submit">Send</button>
+        </form>
+        <div id="responseContainer" class="hidden">
+            <h2>AI Response:</h2>
+            <audio id="audioPlayer" controls></audio>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('chatForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const userInput = document.getElementById('userInput').value;
+            const responseContainer = document.getElementById('responseContainer');
+            const audioPlayer = document.getElementById('audioPlayer');
+
+            fetch(`/get?msg=${encodeURIComponent(userInput)}`)
+                .then(response => response.json())
+                .then(data => {
+                    audioPlayer.src = data.audio_url;
+                    responseContainer.classList.remove('hidden');
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
